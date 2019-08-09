@@ -1,42 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Header, Form, Message } from "semantic-ui-react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
 
-const RegistrationForm = ({ user }) => {
-  const [newUser, setNewUser] = useState("");
-  //const [postRegistrationError, setPostRegistrationError] = useState("");
-
-  useEffect(() => {
-    if (newUser) {
-      localStorage.setItem("token", newUser.token);
-    }
-  }, [newUser]);
-
+const RegistrationForm = ({ registerUser, isSubmittingForm, serverError }) => {
   return (
     <>
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={(values, actions) => {
-          axios
-            .post("http://localhost:5000/api/register", values)
-            .then(response => {
-              setNewUser(response.data);
-              actions.resetForm({ username: "", password: "" });
-            })
-            .catch(errors => {
-              if (errors.response) {
-                if (errors.response.status === 400) {
-                  //setPostRegistrationError(errors.response.data.message)
-                  actions.resetForm({ username: "", password: "" });
-                  actions.setStatus(errors.response.data.message);
-                }
-              }
-            })
-            .then(() => {
-              actions.setSubmitting(false);
-            });
+          registerUser(values);
+          actions.resetForm({ username: "", password: "" });
         }}
         validationSchema={Yup.object().shape({
           username: Yup.string()
@@ -47,7 +21,7 @@ const RegistrationForm = ({ user }) => {
             .required("Password is required")
         })}
         render={props => (
-          <Form onSubmit={props.handleSubmit}>
+          <Form onSubmit={props.handleSubmit} data-testid="form">
             <Header>User Registration</Header>
             <Form.Field>
               <label htmlFor="username">Username</label>
@@ -56,6 +30,8 @@ const RegistrationForm = ({ user }) => {
                 onChange={props.handleChange}
                 type="text"
                 value={props.values.username}
+                data-testid="username-input"
+                placeholder="Enter a username"
               ></input>
             </Form.Field>
             {props.touched.username && props.errors.username && (
@@ -68,17 +44,21 @@ const RegistrationForm = ({ user }) => {
                 onChange={props.handleChange}
                 type="password"
                 value={props.values.password}
+                data-testid="password-input"
+                placeholder="Enter a password"
               ></input>
             </Form.Field>
             {props.touched.password && props.errors.password && (
               <Message negative visible content={props.errors.password} />
             )}
-            <Form.Button loading={props.isSubmitting} type="submit">
+            <Form.Button
+              loading={isSubmittingForm}
+              type="submit"
+              data-testid="submit-button"
+            >
               Register
             </Form.Button>
-            {props.status && (
-              <Message negative visible content={props.status} />
-            )}
+            {serverError && <Message negative visible content={serverError} />}
           </Form>
         )}
       />

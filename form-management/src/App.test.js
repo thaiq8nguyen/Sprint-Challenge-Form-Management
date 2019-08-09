@@ -1,9 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from "react";
+import * as rtl from "@testing-library/react";
+import "@testing-library/jest-dom/extend-expect";
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
+import App from "./App";
+
+afterEach(rtl.cleanup);
+
+/* Test ID 1
+ * Determine grid layout element is display on App.js
+ */
+it("has grid layout in App.js", () => {
+  const appWrapper = rtl.render(<App />);
+  const hasGridLayout = appWrapper.queryByTestId(/grid-layout/);
+  expect(hasGridLayout).toBeInTheDocument();
 });

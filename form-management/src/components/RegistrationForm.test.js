@@ -21,6 +21,7 @@ describe("Registration Form Testsuite", () => {
     const passWordInput = getByTestId("password-input");
     const regForm = getByTestId("form");
 
+    /* Testing Form Input */
     fireEvent.change(userNameInput, {
       target: { value: "tnguyen_2" }
     });

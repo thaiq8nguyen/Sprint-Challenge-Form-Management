@@ -1,52 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Grid } from "semantic-ui-react";
-import RegistrationForm from "./components/RegistrationForm";
-import axios from "axios";
+import Navbar from "./components/Navbar/Navbar";
+import Landing from "./components/Landing/Landing";
+import Login from "./components/Login/Login";
+import Registration from "./components/Registration";
+import Registered from "./components/Registered/Registered";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 const App = () => {
-  const [newUser, setNewUser] = useState("");
-  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
-  const [serverError, setServerSubmit] = useState("");
-
-  useEffect(() => {
-    if (newUser) {
-      localStorage.setItem("lambda_user_token", newUser.token);
-    }
-  }, [newUser]);
-
-  const handleRegisterUser = newUser => {
-    setIsSubmittingForm(true);
-    axios
-      .post("http://localhost:5000/api/register", newUser)
-      .then(response => {
-        setNewUser(response.data);
-      })
-      .catch(errors => {
-        if (errors.response) {
-          if (errors.response.status === 400) {
-            setServerSubmit(errors.response.data.message);
-          }
-        }
-      })
-      .then(() => {
-        setIsSubmittingForm(false);
-      });
-  };
   return (
-    <Grid
-      centered
-      style={{ height: "100vh" }}
-      verticalAlign="middle"
-      data-testid="grid-layout"
-    >
-      <Grid.Column width={5}>
-        <RegistrationForm
-          registerUser={handleRegisterUser}
-          submittingForm={isSubmittingForm}
-          serverError={serverError}
-        />
-      </Grid.Column>
-    </Grid>
+    <Router>
+      <Navbar />
+      <Switch>
+        <Route exact path="/" component={Landing} />
+        <Route path="/login" component={Login} />
+        <Route path="/registration" component={Registration} />
+        <PrivateRoute path="/registered" component={Registered} />
+        <Route path="*" component={() => <div>404 Not Found</div>} />
+      </Switch>
+    </Router>
   );
 };
 

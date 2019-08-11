@@ -1,17 +1,13 @@
 import React from "react";
-import { Header, Form, Message } from "semantic-ui-react";
 import { Formik } from "formik";
+import { Form, Header, Message } from "semantic-ui-react";
 import * as Yup from "yup";
-
-const RegistrationForm = ({ registerUser, isSubmittingForm, serverError }) => {
+const LoginForm = ({ handleLogin, isSubmittingForm, serverError }) => {
   return (
     <>
       <Formik
         initialValues={{ username: "", password: "" }}
-        onSubmit={(values, actions) => {
-          registerUser(values);
-          actions.resetForm({ username: "", password: "" });
-        }}
+        onSubmit={values => handleLogin(values)}
         validationSchema={Yup.object().shape({
           username: Yup.string()
             .min(6, "Username must be greater than 6 characters")
@@ -21,16 +17,8 @@ const RegistrationForm = ({ registerUser, isSubmittingForm, serverError }) => {
             .required("Password is required")
         })}
         render={props => (
-          <Form
-            onSubmit={props.handleSubmit}
-            data-testid="form"
-            style={{
-              backgroundColor: "#42a5f5",
-              padding: "20px",
-              borderRadius: "5px"
-            }}
-          >
-            <Header inverted>User Registration</Header>
+          <Form onSubmit={props.handleSubmit} data-testid="login-form">
+            <Header>Login</Header>
             <Form.Field>
               <label htmlFor="username">Username</label>
               <input
@@ -65,7 +53,7 @@ const RegistrationForm = ({ registerUser, isSubmittingForm, serverError }) => {
               data-testid="submit-button"
               secondary
             >
-              Register
+              Login
             </Form.Button>
             {serverError && <Message negative visible content={serverError} />}
           </Form>
@@ -75,4 +63,4 @@ const RegistrationForm = ({ registerUser, isSubmittingForm, serverError }) => {
   );
 };
 
-export default RegistrationForm;
+export default LoginForm;

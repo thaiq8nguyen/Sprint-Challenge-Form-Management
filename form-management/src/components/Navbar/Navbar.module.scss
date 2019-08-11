@@ -1,0 +1,11 @@
+@import "../../assets/styles/shared.module.scss";
+
+.navbar {
+  .navBrand {
+    .logo {
+      font-family: $headingFont;
+      font-size: 1.5rem;
+      color: $deepRed;
+    }
+  }
+}

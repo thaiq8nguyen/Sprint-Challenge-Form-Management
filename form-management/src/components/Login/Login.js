@@ -1,32 +1,32 @@
 import React, { useState } from "react";
 import { Grid } from "semantic-ui-react";
 import LoginForm from "./LoginForm";
-import api from "../../utils/api";
-import auth from "../../utils/auth";
+
+import AuthService from "../../utils/AuthService";
+
+const auth = new AuthService();
 
 const Login = props => {
-  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerSubmit] = useState("");
 
   const handleLogin = credential => {
-    setIsSubmittingForm(true);
-    api
+    setIsSubmitting(true);
+    auth
       .login(credential)
       .then(response => {
         if (response.status === 200) {
-          auth.login(response.data.token);
+          setIsSubmitting(false);
+          auth.finishAuthentication(response.data.token);
           props.history.push("/registered");
         }
       })
       .catch(errors => {
         if (errors.response) {
           if (errors.response.status === 400) {
-            setServerSubmit(errors.response.data.message);
+            //setServerSubmit(errors.response.data.message);
           }
         }
-      })
-      .then(() => {
-        setIsSubmittingForm(false);
       });
   };
   return (
@@ -39,7 +39,7 @@ const Login = props => {
       <Grid.Column width={5}>
         <LoginForm
           handleLogin={handleLogin}
-          submittingForm={isSubmittingForm}
+          submittingForm={isSubmitting}
           serverError={serverError}
         />
       </Grid.Column>

@@ -10,15 +10,24 @@ class API {
   }
 
   register(newUser) {
-    this.client.post("register", newUser);
+    return this.client.post("register", newUser);
   }
 
   login(credential) {
     return this.client.post("login", credential);
   }
+  logout() {
+    return this.client.get("restricted/logout");
+  }
   getMealCourses() {
-    return this.client.get("restricted/data");
+    return this.client({
+      method: "get",
+      url: "restricted/data",
+      headers: {
+        authorization: localStorage.getItem("lambda_user_token") || ""
+      }
+    });
   }
 }
 
-export default new API();
+export default API;

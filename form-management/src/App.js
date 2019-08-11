@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Landing from "./components/Landing/Landing";
 import Login from "./components/Login/Login";
@@ -6,7 +7,6 @@ import Registration from "./components/Registration";
 import Registered from "./components/Registered/Registered";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 const App = () => {
   return (
     <Router>

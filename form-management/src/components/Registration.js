@@ -1,25 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Grid } from "semantic-ui-react";
 import RegistrationForm from "./RegistrationForm";
-import api from "../utils/auth";
+import AuthService from "../utils/AuthService";
+
+const auth = new AuthService();
 
 const Registration = props => {
-  const [newUser, setNewUser] = useState("");
-  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerSubmit] = useState("");
 
-  useEffect(() => {
-    if (newUser) {
-      localStorage.setItem("lambda_user_token", newUser.token);
-    }
-  }, [newUser]);
-
   const handleRegisterUser = newUser => {
-    setIsSubmittingForm(true);
-    api
+    setIsSubmitting(true);
+    auth
       .register(newUser)
       .then(response => {
-        setNewUser(response.data);
+        auth.finishAuthentication(response.data.token);
         props.history.push("/registered");
       })
       .catch(errors => {
@@ -30,7 +25,7 @@ const Registration = props => {
         }
       })
       .then(() => {
-        setIsSubmittingForm(false);
+        setIsSubmitting(false);
       });
   };
 
@@ -44,7 +39,7 @@ const Registration = props => {
       <Grid.Column width={5}>
         <RegistrationForm
           registerUser={handleRegisterUser}
-          submittingForm={isSubmittingForm}
+          submittingForm={isSubmitting}
           serverError={serverError}
         />
       </Grid.Column>

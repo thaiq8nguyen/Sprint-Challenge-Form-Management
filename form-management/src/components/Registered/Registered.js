@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Card, Header, Grid, List } from "semantic-ui-react";
-import api from "../../utils/api";
+import ApiService from "../../utils/ApiService";
+
+const api = new ApiService();
 
 const Registered = props => {
   const [mealCourses, setMealCourses] = useState([]);
